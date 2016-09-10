@@ -26,13 +26,18 @@ _(Note: these are class wide attributes and affect each instance of `Hotkey`. Yo
 ## Code Example
 ```python
 import time
-from hotikeys import Hotkey, Key, KeyState
+from hotikeys import Hotkey, Key, KeyState, newhotkey
 
 def handler(args):
     print(Key[args.vkey], args.event.state)
 
 def on_ctrl_shift_a():
     print('Ctrl-Shift-A pressed!')
+    
+
+@newhotkey(Key.LButton)
+def lmb_hotkey(args):
+    print('Click, click! ({x}, {y}'.format(x=args.x, y=args.y))
 
 Hotkey(handler, events=(KeyState.Down, KeyState.Up))
 Hotkey(on_ctrl_shift_a, Key.A, (Key.LControl, Key.LShift))

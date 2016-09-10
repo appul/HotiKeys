@@ -1,2 +1,2 @@
 from hotikeys.enums import Key, KeyState, EventId
-from hotikeys.hotkey import Hotkey
+from hotikeys.hotkey import Hotkey, newhotkey

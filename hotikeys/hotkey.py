@@ -115,3 +115,10 @@ class Hotkey(HotkeyCore):
             self._events = tuple(int(event) for event in events)
         else:
             self._events = None
+
+
+def newhotkey(key=None, modifiers=None, events=KeyState.Down):
+    def decorator(handler):
+        return Hotkey(handler, key, modifiers, events)
+
+    return decorator
