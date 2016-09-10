@@ -5,7 +5,7 @@ from ctypes import c_int, c_void_p
 from typing import Dict
 from typing import List
 
-from hotikeys.enums import KeyState, EventIdentifier
+from hotikeys.enums import KeyState, EventId
 from hotikeys.lleventargs import LowLevelKeyboardArgs, LowLevelMouseArgs
 from hotikeys.windowshook import WindowsHook
 
@@ -66,7 +66,7 @@ class HotkeyCore(metaclass=HotkeyCoreMeta):
 
     @classmethod
     def __on_event(cls, args):
-        if args.event is EventIdentifier.WM_MOUSEMOVE or args.event is EventIdentifier.WM_MOUSEWHEEL:
+        if args.event is EventId.WM_MOUSEMOVE or args.event is EventId.WM_MOUSEWHEEL:
             for hotkey in cls.__hotkeys:
                 hotkey.on_mouse(args)
             return

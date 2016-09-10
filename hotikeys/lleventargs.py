@@ -2,7 +2,7 @@ from typing import Any
 from typing import Tuple
 
 from hotikeys.customtypes import FlagsDword
-from hotikeys.enums import EventIdentifier
+from hotikeys.enums import EventId
 
 
 class LowLevelEventArgs(object):
@@ -11,7 +11,7 @@ class LowLevelEventArgs(object):
         self.wparam = wparam  # type: int
         self.lparam = lparam  # type: Tuple[Any]
 
-        self.event = EventIdentifier[wparam]  # type: EventIdentifier
+        self.event = EventId[wparam]  # type: EventId
 
 
 class LowLevelKeyboardArgs(LowLevelEventArgs):

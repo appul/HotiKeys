@@ -3,13 +3,13 @@ from typing import Callable, Iterable
 from typing import Union
 
 from hotikeys.core import HotkeyCore
-from hotikeys.enums import KeyState, Key, EventIdentifier
+from hotikeys.enums import KeyState, Key, EventId
 from hotikeys.lleventargs import LowLevelKeyboardArgs, LowLevelMouseArgs
 
 EventArgs = Union[LowLevelKeyboardArgs, LowLevelMouseArgs]
 _HandlerArg = Callable[[EventArgs], None]
 _KeyArg = Union[int, Key]
-_EventArg = Union[int, EventIdentifier, KeyState]
+_EventArg = Union[int, EventId, KeyState]
 
 
 class Hotkey(HotkeyCore):
@@ -107,10 +107,10 @@ class Hotkey(HotkeyCore):
     @events.setter
     def events(self, events):
         if events is not None:
-            if isinstance(events, (int, EventIdentifier, KeyState)):
+            if isinstance(events, (int, EventId, KeyState)):
                 events = (events,)
             if not isinstance(events, (list, tuple)):
-                raise TypeError('expected EventIdentifier, KeyState, int, list or tuple'
+                raise TypeError('expected EventId, KeyState, int, list or tuple'
                                 ' for events, received: {0}'.format(type(events)))
             self._events = tuple(int(event) for event in events)
         else:

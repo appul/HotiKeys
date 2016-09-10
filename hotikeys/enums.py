@@ -12,7 +12,7 @@ class InputDevice(IEnum):
     Mouse = 2
 
 
-class EventIdentifier(IEnum):
+class EventId(IEnum):
     WM_KEYDOWN = (0x100, KeyState.Down, InputDevice.Keyboard)
     WM_KEYUP = (0x101, KeyState.Up, InputDevice.Keyboard)
     WM_SYSKEYDOWN = (0x104, KeyState.Down, InputDevice.Keyboard)
