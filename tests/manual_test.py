@@ -1,7 +1,6 @@
 import asyncio
 
-from hotikeys import Hotkey
-from hotikeys.enums import Key
+from hotikeys import Hotkey, Key
 from hotikeys.hotkey import EventArgs
 
 MAX_RUN_TIME = 10
