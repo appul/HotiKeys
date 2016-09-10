@@ -1,4 +1,3 @@
-import threading
 import time
 from _ctypes import POINTER
 from abc import abstractmethod
@@ -39,12 +38,7 @@ class HotkeyCore(metaclass=HotkeyCoreMeta):
         cls.__hotkeys.append(obj)
         if not cls.__hooked:
             cls.__hooked = True
-            if cls.threaded:
-                thread = threading.Thread(target=cls.__install_hooks)
-                thread.setDaemon(True)
-                thread.start()
-            else:
-                cls.__install_hooks()
+            cls.__install_hooks()
         return obj
 
     @classmethod
@@ -52,10 +46,10 @@ class HotkeyCore(metaclass=HotkeyCoreMeta):
         signature = c_int, c_int, POINTER(c_void_p)
 
         keyboard_hook = WindowsHook(_WH_KEYBOARD_LL, signature, cls.__on_keyboard)
-        keyboard_hook.register()
+        keyboard_hook.register(cls.threaded)
 
         mouse_hook = WindowsHook(_WH_MOUSE_LL, signature, cls.__on_mouse)
-        mouse_hook.register()
+        mouse_hook.register(cls.threaded)
 
     @classmethod
     def __on_keyboard(cls, ncode, wparam, lparam):
