@@ -13,7 +13,7 @@ def automated_test(loop):
         print('stopping')
         loop.stop()
 
-    Hotkey(key_handler, None, (), ())
+    Hotkey(key_handler)
     Hotkey(stop_loop, Key.C, Key.LControl)
 
     loop.create_task(heartbeat(loop, 0))
