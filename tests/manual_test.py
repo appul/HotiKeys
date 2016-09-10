@@ -4,6 +4,8 @@ from hotikeys import Hotkey
 from hotikeys.enums import Key
 from hotikeys.hotkey import EventProcs
 
+MAX_RUN_TIME = 10
+
 
 def automated_test(loop):
     def key_handler(proc: EventProcs):
@@ -21,7 +23,7 @@ def automated_test(loop):
 
 
 async def heartbeat(loop, count):
-    if count > 5:
+    if count >= MAX_RUN_TIME:
         return loop.stop()
     await asyncio.sleep(1)
     loop.create_task(heartbeat(loop, count + 1))
