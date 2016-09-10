@@ -20,8 +20,8 @@ class Hotkey(HotkeyCore):
                  events: Union[_EventArg, Iterable[_EventArg], None] = KeyState.Down):
         self._handler = None  # type: _HandlerArg
         self._key = None  # type:
-        self._modifiers = None  # type: Iterable[int]
-        self._events = None  # type: Iterable[int]
+        self._modifiers = ()  # type: Iterable[int]
+        self._events = ()  # type: Iterable[int]
         self._handler_takes_args = None  # type: bool
 
         self.handler = handler
@@ -114,7 +114,7 @@ class Hotkey(HotkeyCore):
                                 ' for events, received: {0}'.format(type(events)))
             self._events = tuple(int(event) for event in events)
         else:
-            self._events = None
+            self._events = ()
 
 
 def newhotkey(key=None, modifiers=None, events=KeyState.Down):
