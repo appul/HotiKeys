@@ -56,6 +56,7 @@ class Hotkey(HotkeyCore):
 
     def _match_events(self, proc, implicit=True) -> bool:
         if not self.events and implicit: return True
+        if proc.event is None: return False
         if int(proc.event) in self.events: return True
         if proc.event.state is None: return False
         if int(proc.event.state) in self.events: return True
