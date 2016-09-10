@@ -19,7 +19,7 @@ HotiKeys has no dependancies other than Python 3.5+ itself.
 - `purge_delay` (float, default: 10.000): The time in seconds until pressed keys are removed (in case they're not correctly removed during key up events)
 - `threaded` (bool, default: True): Whether the hooks should be registered in new threads to prevent blocking the current thread.
 
-_(Note: `keyboard`, `mouse` and `threaded` have to be set before the hooks are placed, which happens when the first instance of the class is made.)_
+_(Note: `keyboard`, `mouse` and `threaded` have to be set before the hooks are placed, which happens when the first instance of the class is made.)_  
 _(Note: these are class wide attributes and affect each instance of `Hotkey`. You can subclass and override these attributes if you wish to have separate configurations.)_
 
 
