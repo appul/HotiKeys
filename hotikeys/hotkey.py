@@ -1,21 +1,27 @@
 from inspect import signature
-from typing import Callable
-from typing import List
-from typing import Tuple
+from typing import Callable, Iterable
 from typing import Union
 
 from hotikeys.core import HotkeyCore
-from hotikeys.customtypes import IEnum
-from hotikeys.enums import KeyState, Key
+from hotikeys.enums import KeyState, Key, EventIdentifier
 from hotikeys.llprocs import LowLevelKeyboardProc, LowLevelMouseProc
+
+EventProcs = Union[LowLevelKeyboardProc, LowLevelMouseProc]
+_HandlerArg = Callable[[EventProcs], None]
+_KeyArg = Union[int, Key]
+_EventArg = Union[int, EventIdentifier, KeyState]
 
 
 class Hotkey(HotkeyCore):
-    def __init__(self, handler, key=None, modifiers=(), events=(KeyState.Down,)):
-        self._handler = None  # type: Callable[[EventArgs], None]
-        self._key = None  # type: int
-        self._modifiers = None  # type: List[int]
-        self._events = None  # type: List[int]
+    def __init__(self,
+                 handler: _HandlerArg,
+                 key: _KeyArg = None,
+                 modifiers: Union[_KeyArg, Iterable[_KeyArg], None] = None,
+                 events: Union[_EventArg, Iterable[_EventArg], None] = KeyState.Down):
+        self._handler = None  # type: _HandlerArg
+        self._key = None  # type:
+        self._modifiers = None  # type: Iterable[int]
+        self._events = None  # type: Iterable[int]
         self._handler_takes_proc = None  # type: bool
 
         self.handler = handler
@@ -56,7 +62,7 @@ class Hotkey(HotkeyCore):
         return False
 
     @property
-    def handler(self) -> Callable[[LowLevelKeyboardProc, LowLevelMouseProc], None]:
+    def handler(self) -> _HandlerArg:
         return self._handler
 
     @handler.setter
@@ -78,7 +84,7 @@ class Hotkey(HotkeyCore):
             self._key = None
 
     @property
-    def modifiers(self) -> Tuple[int]:
+    def modifiers(self) -> Iterable[int]:
         return self._modifiers
 
     @modifiers.setter
@@ -87,22 +93,24 @@ class Hotkey(HotkeyCore):
             if isinstance(modifiers, (int, Key)):
                 modifiers = (modifiers,)
             if not isinstance(modifiers, (list, tuple)):
-                raise TypeError('expected Key, int, list or tuple for modifiers, received: {0}'.format(type(modifiers)))
+                raise TypeError('expected Key, int, list or tuple'
+                                ' for modifiers, received: {0}'.format(type(modifiers)))
             self._modifiers = tuple(int(modifier) for modifier in modifiers)
         else:
             self._modifiers = ()
 
     @property
-    def events(self) -> Tuple[Union[int, str]]:
+    def events(self) -> Iterable[int]:
         return self._events
 
     @events.setter
     def events(self, events):
         if events is not None:
-            if isinstance(events, (int, IEnum)):
+            if isinstance(events, (int, EventIdentifier, KeyState)):
                 events = (events,)
             if not isinstance(events, (list, tuple)):
-                raise TypeError('expected int, IEnum, list or tuple for events, received: {0}'.format(type(events)))
+                raise TypeError('expected EventIdentifier, KeyState, int, list or tuple'
+                                ' for events, received: {0}'.format(type(events)))
             self._events = tuple(int(event) for event in events)
         else:
             self._events = None
