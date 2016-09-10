@@ -27,6 +27,9 @@ class HotkeyCore(metaclass=HotkeyCoreMeta):
     purge_delay = 10.000
     threaded = True
     no_repeat = True
+    keyboard = True
+    mouse = True
+
     _pressed = {}  # type: Dict[int, float]
 
     __hooked = False
@@ -45,11 +48,13 @@ class HotkeyCore(metaclass=HotkeyCoreMeta):
     def __install_hooks(cls):
         signature = c_int, c_int, POINTER(c_void_p)
 
-        keyboard_hook = WindowsHook(_WH_KEYBOARD_LL, signature, cls.__on_keyboard)
-        keyboard_hook.register(cls.threaded)
+        if cls.keyboard:
+            keyboard_hook = WindowsHook(_WH_KEYBOARD_LL, signature, cls.__on_keyboard)
+            keyboard_hook.register(cls.threaded)
 
-        mouse_hook = WindowsHook(_WH_MOUSE_LL, signature, cls.__on_mouse)
-        mouse_hook.register(cls.threaded)
+        if cls.mouse:
+            mouse_hook = WindowsHook(_WH_MOUSE_LL, signature, cls.__on_mouse)
+            mouse_hook.register(cls.threaded)
 
     @classmethod
     def __on_keyboard(cls, ncode, wparam, lparam):
