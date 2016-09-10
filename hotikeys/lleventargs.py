@@ -66,7 +66,7 @@ class LowLevelMouseArgs(LowLevelEventArgs):
     def get_vkey(cls, wparam, lparam) -> int:
         vkey = cls.wparam_to_vkeys[wparam & 0xF]
         if vkey is 0x0:
-            return 0x4 + lparam[2]
+            return 0x4 + (lparam[2] >> 16)
         return vkey
 
     wparam_to_vkeys = (

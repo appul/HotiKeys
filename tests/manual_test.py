@@ -8,7 +8,7 @@ MAX_RUN_TIME = 10
 
 def automated_test(loop):
     def key_handler(args: EventArgs):
-        print(Key[args.vkey], args.event, args.flags)
+        print(args.vkey, Key[args.vkey], args.event, args.flags)
 
     def stop_loop():
         print('stopping')
