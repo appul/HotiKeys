@@ -6,7 +6,7 @@ from typing import Dict
 from typing import List
 
 from hotikeys.enums import KeyState, EventIdentifier
-from hotikeys.llprocs import LowLevelKeyboardProc, LowLevelMouseProc
+from hotikeys.lleventargs import LowLevelKeyboardArgs, LowLevelMouseArgs
 from hotikeys.windowshook import WindowsHook
 
 _WH_KEYBOARD_LL = 0x0D
@@ -58,24 +58,24 @@ class HotkeyCore(metaclass=HotkeyCoreMeta):
 
     @classmethod
     def __on_keyboard(cls, ncode, wparam, lparam):
-        cls.__on_event(LowLevelKeyboardProc(ncode, wparam, lparam))
+        cls.__on_event(LowLevelKeyboardArgs(ncode, wparam, lparam))
 
     @classmethod
     def __on_mouse(cls, ncode, wparam, lparam):
-        cls.__on_event(LowLevelMouseProc(ncode, wparam, lparam))
+        cls.__on_event(LowLevelMouseArgs(ncode, wparam, lparam))
 
     @classmethod
-    def __on_event(cls, proc):
-        if proc.event is EventIdentifier.WM_MOUSEMOVE or proc.event is EventIdentifier.WM_MOUSEWHEEL:
+    def __on_event(cls, args):
+        if args.event is EventIdentifier.WM_MOUSEMOVE or args.event is EventIdentifier.WM_MOUSEWHEEL:
             for hotkey in cls.__hotkeys:
-                hotkey.on_mouse(proc)
+                hotkey.on_mouse(args)
             return
 
         cls.__purge_keys()
-        cls.__set_key_state(proc)
-        if not cls.__prevent_repeat(proc):
+        cls.__set_key_state(args)
+        if not cls.__prevent_repeat(args):
             for hotkey in cls.__hotkeys:
-                hotkey.on_event(proc)
+                hotkey.on_event(args)
 
     @classmethod
     def __purge_keys(cls):
@@ -85,22 +85,22 @@ class HotkeyCore(metaclass=HotkeyCoreMeta):
                 cls._pressed.pop(key)
 
     @classmethod
-    def __set_key_state(cls, proc):
-        if proc.event.state == KeyState.Down:
-            cls._pressed[proc.vkey] = time.time() + cls.purge_delay
-        elif proc.vkey in cls._pressed:
-            cls._pressed.pop(proc.vkey)
+    def __set_key_state(cls, args):
+        if args.event.state == KeyState.Down:
+            cls._pressed[args.vkey] = time.time() + cls.purge_delay
+        elif args.vkey in cls._pressed:
+            cls._pressed.pop(args.vkey)
 
     @classmethod
-    def __prevent_repeat(cls, proc):
+    def __prevent_repeat(cls, args):
         if not cls.no_repeat:
             return False
-        if proc.event.state == KeyState.Up:
+        if args.event.state == KeyState.Up:
             cls.__last_key = None
             return False
-        if proc.vkey == cls.__last_key:
+        if args.vkey == cls.__last_key:
             return True
-        cls.__last_key = proc.vkey
+        cls.__last_key = args.vkey
 
     @classmethod
     def is_pressed(cls, key) -> bool:

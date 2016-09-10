@@ -2,14 +2,14 @@ import asyncio
 
 from hotikeys import Hotkey
 from hotikeys.enums import Key
-from hotikeys.hotkey import EventProcs
+from hotikeys.hotkey import EventArgs
 
 MAX_RUN_TIME = 10
 
 
 def automated_test(loop):
-    def key_handler(proc: EventProcs):
-        print(Key[proc.vkey], proc.event, proc.flags)
+    def key_handler(args: EventArgs):
+        print(Key[args.vkey], args.event, args.flags)
 
     def stop_loop():
         print('stopping')

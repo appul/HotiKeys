@@ -5,7 +5,7 @@ from hotikeys.customtypes import FlagsDword
 from hotikeys.enums import EventIdentifier
 
 
-class LowLevelEventProc(object):
+class LowLevelEventArgs(object):
     def __init__(self, ncode, wparam, lparam):
         self.ncode = ncode  # type: int
         self.wparam = wparam  # type: int
@@ -14,7 +14,7 @@ class LowLevelEventProc(object):
         self.event = EventIdentifier[wparam]  # type: EventIdentifier
 
 
-class LowLevelKeyboardProc(LowLevelEventProc):
+class LowLevelKeyboardArgs(LowLevelEventArgs):
     def __init__(self, ncode, wparam, lparam):
         super().__init__(ncode, wparam, lparam)
 
@@ -46,7 +46,7 @@ class LowLevelKeyboardFlags(FlagsDword):
         return self[7]
 
 
-class LowLevelMouseProc(LowLevelEventProc):
+class LowLevelMouseArgs(LowLevelEventArgs):
     def __init__(self, ncode, wparam, lparam):
         super().__init__(ncode, wparam, lparam)
         self.x = lparam[0]  # type: int

@@ -4,10 +4,10 @@ from typing import Union
 
 from hotikeys.core import HotkeyCore
 from hotikeys.enums import KeyState, Key, EventIdentifier
-from hotikeys.llprocs import LowLevelKeyboardProc, LowLevelMouseProc
+from hotikeys.lleventargs import LowLevelKeyboardArgs, LowLevelMouseArgs
 
-EventProcs = Union[LowLevelKeyboardProc, LowLevelMouseProc]
-_HandlerArg = Callable[[EventProcs], None]
+EventArgs = Union[LowLevelKeyboardArgs, LowLevelMouseArgs]
+_HandlerArg = Callable[[EventArgs], None]
 _KeyArg = Union[int, Key]
 _EventArg = Union[int, EventIdentifier, KeyState]
 
@@ -22,44 +22,44 @@ class Hotkey(HotkeyCore):
         self._key = None  # type:
         self._modifiers = None  # type: Iterable[int]
         self._events = None  # type: Iterable[int]
-        self._handler_takes_proc = None  # type: bool
+        self._handler_takes_args = None  # type: bool
 
         self.handler = handler
         self.key = key
         self.modifiers = modifiers
         self.events = events
 
-    def on_event(self, proc):
-        if not isinstance(proc, (LowLevelKeyboardProc, LowLevelMouseProc)):
-            raise TypeError('expected (LowLevelKeyboardProc, LowLevelMouseProc)'
-                            ' for proc, got {0}'.format(type(proc)))
+    def on_event(self, args):
+        if not isinstance(args, (LowLevelKeyboardArgs, LowLevelMouseArgs)):
+            raise TypeError('expected (LowLevelKeyboardArgs, LowLevelMouseArgs)'
+                            ' for args, got {0}'.format(type(args)))
 
-        if not self._match_key(proc): return
+        if not self._match_key(args): return
         if not self._match_modifiers(): return
-        if not self._match_events(proc): return
-        if self._handler_takes_proc:
-            self.handler(proc)
+        if not self._match_events(args): return
+        if self._handler_takes_args:
+            self.handler(args)
         else:
             self.handler()
 
-    def on_mouse(self, proc):
-        if not self._match_events(proc, False): return
-        self.handler(proc)
+    def on_mouse(self, args):
+        if not self._match_events(args, False): return
+        self.handler(args)
 
-    def _match_key(self, proc, implicit=True) -> bool:
+    def _match_key(self, args, implicit=True) -> bool:
         if self.key is None and implicit: return True
-        return self.key == proc.vkey
+        return self.key == args.vkey
 
     def _match_modifiers(self, implicit=True) -> bool:
         if not self.modifiers and implicit: return True
         return all(self.is_pressed(key) for key in self.modifiers)
 
-    def _match_events(self, proc, implicit=True) -> bool:
+    def _match_events(self, args, implicit=True) -> bool:
         if not self.events and implicit: return True
-        if proc.event is None: return False
-        if int(proc.event) in self.events: return True
-        if proc.event.state is None: return False
-        if int(proc.event.state) in self.events: return True
+        if args.event is None: return False
+        if int(args.event) in self.events: return True
+        if args.event.state is None: return False
+        if int(args.event.state) in self.events: return True
         return False
 
     @property
@@ -70,7 +70,7 @@ class Hotkey(HotkeyCore):
     def handler(self, handler):
         if not callable(handler):
             raise TypeError('expected callable for handler, received: {0}'.format(type(handler)))
-        self._handler_takes_proc = bool(len(signature(handler).parameters))
+        self._handler_takes_args = bool(len(signature(handler).parameters))
         self._handler = handler
 
     @property
