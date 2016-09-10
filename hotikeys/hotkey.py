@@ -7,7 +7,7 @@ from typing import Union
 from hotikeys.core import HotkeyCore
 from hotikeys.customtypes import IEnum
 from hotikeys.enums import KeyState, Key
-from hotikeys.llprocs import EventArgs, LowLevelKeyboardProc, LowLevelMouseProc
+from hotikeys.llprocs import LowLevelKeyboardProc, LowLevelMouseProc
 
 
 class Hotkey(HotkeyCore):
@@ -56,7 +56,7 @@ class Hotkey(HotkeyCore):
         return False
 
     @property
-    def handler(self) -> Callable[[EventArgs], None]:
+    def handler(self) -> Callable[[LowLevelKeyboardProc, LowLevelMouseProc], None]:
         return self._handler
 
     @handler.setter

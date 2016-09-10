@@ -1,5 +1,4 @@
 from typing import Any
-from typing import Optional
 from typing import Tuple
 
 from hotikeys.customtypes import FlagsDword
@@ -96,11 +95,3 @@ class LowLevelMouseFlags(FlagsDword):
     @property
     def lower_il_injected(self):
         return self[1]
-
-
-class EventArgs(object):
-    def __init__(self, event, key, x, y):
-        self.event = event  # type: EventIdentifier
-        self.key = key  # type: int
-        self.x = x  # type: Optional[int]
-        self.y = y  # type: Optional[int]
