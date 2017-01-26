@@ -32,12 +32,17 @@ class WindowsHook(object):
 
     def hook(self):
         def on_event(*args, **kwargs):
+            call_next = True
             # noinspection PyBroadException
             try:
                 self.handler(*args, **kwargs)
+            except BlockNextHookException:
+                call_next = False
             except:
                 print_exception(*sys.exc_info())
             finally:
+                if not call_next:
+                    return 1
                 return _win32_CallNextHookEx(None, *args, **kwargs)
 
         func = ctypes.CFUNCTYPE(ctypes.c_int, *self.signature)
@@ -75,3 +80,7 @@ def windowshookmethod(event, signature, threaded=True):
         return method
 
     return decorator
+
+
+class BlockNextHookException(Exception):
+    """Block CallNextHookEx from being called during an event"""

@@ -7,6 +7,7 @@ from hotikeys import Key
 from hotikeys import KeyState
 from hotikeys.hotkey import EventArgs
 from hotikeys.lleventargs import LowLevelKeyboardArgs, LowLevelMouseArgs
+from hotikeys.windowshook import BlockNextHookException
 
 log = logging.getLogger(__name__)
 EventHandler = Callable[[Union[LowLevelKeyboardArgs, LowLevelMouseArgs]], Optional[bool]]
@@ -39,6 +40,8 @@ class Keybind(object):
         handler = self.on_press if press else self.on_release
         handler_result = handler and handler(args)
         self.value = press if handler_result is None else handler_result
+        if handler_result is BlockNextHookException:
+            raise BlockNextHookException
 
     def hook(self):
         self.hotkey = Hotkey(
@@ -78,3 +81,5 @@ class Keytoggle(Keybind):
             result = self.on_press and self.on_press(args)
             if result is not False:
                 self.value = not self.value
+            if result is BlockNextHookException:
+                raise BlockNextHookException
